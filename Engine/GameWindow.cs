@@ -54,7 +54,6 @@ namespace AnamnesisDalanMulih.Engine
             _gfx.InterpolationMode = InterpolationMode.NearestNeighbor;
             _gfx.PixelOffsetMode = PixelOffsetMode.Half;
             _gfx.SmoothingMode = SmoothingMode.None;
-            _gfx.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
 
             _attr = new ImageAttributes();
             _attr.SetWrapMode(WrapMode.TileFlipXY); // cegah tepi gambar "bocor" saat diperbesar
@@ -120,6 +119,7 @@ namespace AnamnesisDalanMulih.Engine
             if (!_running) return;
 
             _gfx.Clear(Color.Black);
+            Ui.BeginFrame();            // teks dicatat dulu, digambar di OnPaint pada resolusi layar
             _scene.Draw(_gfx);
             Invalidate();
         }
@@ -138,6 +138,7 @@ namespace AnamnesisDalanMulih.Engine
             g.InterpolationMode = InterpolationMode.NearestNeighbor;
             g.PixelOffsetMode = PixelOffsetMode.Half;
             g.DrawImage(_back, new Rectangle(x, y, w, h), 0, 0, ViewW, ViewH, GraphicsUnit.Pixel, _attr);
+            Ui.FlushText(g, x, y, scale);   // teks digambar tajam pada ukuran layar (bukan di buffer 320x180)
         }
 
         protected override void OnFormClosed(FormClosedEventArgs e)

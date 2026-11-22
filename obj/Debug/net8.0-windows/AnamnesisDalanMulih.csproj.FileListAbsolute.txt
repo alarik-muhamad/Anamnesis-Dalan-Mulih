@@ -2,12 +2,15 @@ D:\Projects\College\Sem 7\Pemgim\Tugas akhir\AnamnesisDalanMulih\bin\Debug\net8.
 D:\Projects\College\Sem 7\Pemgim\Tugas akhir\AnamnesisDalanMulih\bin\Debug\net8.0-windows\Assets\Backgrounds\.gitkeep
 D:\Projects\College\Sem 7\Pemgim\Tugas akhir\AnamnesisDalanMulih\bin\Debug\net8.0-windows\Assets\Fonts\.gitkeep
 D:\Projects\College\Sem 7\Pemgim\Tugas akhir\AnamnesisDalanMulih\bin\Debug\net8.0-windows\Assets\Levels\area1.csv
+D:\Projects\College\Sem 7\Pemgim\Tugas akhir\AnamnesisDalanMulih\bin\Debug\net8.0-windows\Assets\Levels\area2.csv
+D:\Projects\College\Sem 7\Pemgim\Tugas akhir\AnamnesisDalanMulih\bin\Debug\net8.0-windows\Assets\Levels\area3.csv
 D:\Projects\College\Sem 7\Pemgim\Tugas akhir\AnamnesisDalanMulih\bin\Debug\net8.0-windows\Assets\Sprites\.gitkeep
 D:\Projects\College\Sem 7\Pemgim\Tugas akhir\AnamnesisDalanMulih\bin\Debug\net8.0-windows\Assets\Tiles\.gitkeep
 D:\Projects\College\Sem 7\Pemgim\Tugas akhir\AnamnesisDalanMulih\bin\Debug\net8.0-windows\Assets\UI\.gitkeep
 D:\Projects\College\Sem 7\Pemgim\Tugas akhir\AnamnesisDalanMulih\bin\Debug\net8.0-windows\AnamnesisDalanMulih.exe
 D:\Projects\College\Sem 7\Pemgim\Tugas akhir\AnamnesisDalanMulih\bin\Debug\net8.0-windows\AnamnesisDalanMulih.deps.json
 D:\Projects\College\Sem 7\Pemgim\Tugas akhir\AnamnesisDalanMulih\bin\Debug\net8.0-windows\AnamnesisDalanMulih.runtimeconfig.json
+D:\Projects\College\Sem 7\Pemgim\Tugas akhir\AnamnesisDalanMulih\bin\Debug\net8.0-windows\AnamnesisDalanMulih.runtimeconfig.dev.json
 D:\Projects\College\Sem 7\Pemgim\Tugas akhir\AnamnesisDalanMulih\bin\Debug\net8.0-windows\AnamnesisDalanMulih.dll
 D:\Projects\College\Sem 7\Pemgim\Tugas akhir\AnamnesisDalanMulih\bin\Debug\net8.0-windows\AnamnesisDalanMulih.pdb
 D:\Projects\College\Sem 7\Pemgim\Tugas akhir\AnamnesisDalanMulih\obj\Debug\net8.0-windows\AnamnesisDalanMulih.GeneratedMSBuildEditorConfig.editorconfig
@@ -19,5 +22,4 @@ D:\Projects\College\Sem 7\Pemgim\Tugas akhir\AnamnesisDalanMulih\obj\Debug\net8.
 D:\Projects\College\Sem 7\Pemgim\Tugas akhir\AnamnesisDalanMulih\obj\Debug\net8.0-windows\AnamnesisDalanMulih.pdb
 D:\Projects\College\Sem 7\Pemgim\Tugas akhir\AnamnesisDalanMulih\obj\Debug\net8.0-windows\AnamnesisDalanMulih.genruntimeconfig.cache
 D:\Projects\College\Sem 7\Pemgim\Tugas akhir\AnamnesisDalanMulih\obj\Debug\net8.0-windows\ref\AnamnesisDalanMulih.dll
-D:\Projects\College\Sem 7\Pemgim\Tugas akhir\AnamnesisDalanMulih\bin\Debug\net8.0-windows\Assets\Levels\area2.csv
-D:\Projects\College\Sem 7\Pemgim\Tugas akhir\AnamnesisDalanMulih\bin\Debug\net8.0-windows\Assets\Levels\area3.csv
+D:\Projects\College\Sem 7\Pemgim\Tugas akhir\AnamnesisDalanMulih\obj\Debug\net8.0-windows\Anamnesi.5CD74C43.Up2Date

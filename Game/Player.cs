@@ -71,12 +71,19 @@ namespace AnamnesisDalanMulih.Game
             OnGround = false;
         }
 
-        /// <summary>Memantul setelah menginjak musuh. held = tombol lompat ditahan (pantulan lebih tinggi).</summary>
-        public void Bounce(bool held)
+        /// <summary>
+        /// Menginjak musuh: pemain terlempar menjauh (bukan memantul di tempat), jadi tidak bisa
+        /// menginjak berulang-ulang dari posisi yang sama. dir = -1 (kiri) atau 1 (kanan).
+        /// Kontrol terkunci sebentar. held = tombol lompat ditahan (lemparan sedikit lebih tinggi).
+        /// </summary>
+        public void Throw(int dir, bool held)
         {
-            VY = held ? -260f : -190f;
+            VX = dir * 120f;
+            VY = held ? -250f : -200f;
+            _stun = 0.3f;
             OnGround = false;
             _coyote = 0f;
+            _buffer = 0f;
         }
 
         public void Update(float dt, InputState input, Tilemap map)

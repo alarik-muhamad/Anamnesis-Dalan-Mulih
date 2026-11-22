@@ -12,16 +12,24 @@ namespace AnamnesisDalanMulih.Game
 
     /// <summary>
     /// "Sprite" kotak outline yang dipakai pemain, NPC, dan musuh.
-    /// Beda karakter = beda warna + gaya mata. Digambar lewat kode, bukan gambar.
+    /// Beda karakter = beda warna + gaya mata. dashed = garis putus-putus (musuh sedang kebal).
+    /// Digambar lewat kode, bukan gambar.
     /// </summary>
     public static class BoxSprite
     {
         public static void Draw(Graphics g, int x, int y, int w, int h, Color color, EyeStyle eyes, bool facingRight)
         {
+            Draw(g, x, y, w, h, color, eyes, facingRight, false);
+        }
+
+        public static void Draw(Graphics g, int x, int y, int w, int h, Color color, EyeStyle eyes, bool facingRight, bool dashed)
+        {
             using (Pen pen = new Pen(color))
+            using (Pen box = new Pen(color))
             using (SolidBrush brush = new SolidBrush(color))
             {
-                g.DrawRectangle(pen, x, y, w - 1, h - 1);
+                if (dashed) box.DashPattern = new float[] { 2f, 2f };
+                g.DrawRectangle(box, x, y, w - 1, h - 1);
 
                 int ey = y + Math.Max(3, h / 4);
 

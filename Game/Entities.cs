@@ -30,7 +30,10 @@ namespace AnamnesisDalanMulih.Game
 
         public void Draw(Graphics g, int camX, int camY)
         {
-            BoxSprite.Draw(g, (int)Math.Round(X) - camX, (int)Math.Round(Y) - camY, W, H, Color, Eyes, FacingRight);
+            int x = (int)Math.Round(X) - camX;
+            int y = (int)Math.Round(Y) - camY;
+            BoxSprite.Draw(g, x, y, W, H, Color, Eyes, FacingRight);
+            Ui.DrawTag(g, Name, x + W / 2, y + H + 2, Color);
         }
     }
 

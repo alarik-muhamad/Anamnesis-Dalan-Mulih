@@ -72,8 +72,9 @@ namespace AnamnesisDalanMulih.Game
         public static readonly Color Lurah = Color.FromArgb(120, 215, 140);
         public static readonly Color Raka = Color.FromArgb(130, 170, 245);
         public static readonly Color Cemas = Color.FromArgb(230, 80, 80);
+        public static readonly Color Keraguan = Color.FromArgb(210, 70, 200);
         public static readonly Color TidakAman = Color.FromArgb(240, 130, 50);
-        public static readonly Color Depresi = Color.FromArgb(165, 125, 255);
+        public static readonly Color Depresi = Color.FromArgb(140, 120, 255);
         public static readonly Color Dummy = Color.FromArgb(150, 150, 170);
         public static readonly Color Whisper = Color.FromArgb(190, 170, 255);
 

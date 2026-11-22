@@ -31,8 +31,17 @@ namespace AnamnesisDalanMulih.Game
         private static Enemy Cemas(int col, int minCol, int maxCol, int row)
         {
             Enemy e = new Enemy("Cemas", TileX(col) + 2f, Feet(row, 12), 12, 12, 2, 28f, Palette.Cemas);
+            e.Behavior = EnemyBehavior.Charger;
             e.MinX = TileX(minCol);
             e.MaxX = TileX(maxCol + 1);
+            return e;
+        }
+
+        /// <summary>Penembak: diam di tempat, menembakkan peluru ke arah pemain.</summary>
+        private static Enemy Keraguan(int col, int row)
+        {
+            Enemy e = new Enemy("Keraguan", TileX(col) + 2f, Feet(row, 12), 12, 12, 2, 0f, Palette.Keraguan);
+            e.Behavior = EnemyBehavior.Shooter;
             return e;
         }
 
@@ -142,8 +151,9 @@ namespace AnamnesisDalanMulih.Game
 
             if (s.Flag("learned"))
                 return Dlg.Chain(
-                    Dlg.Say("Mbah Sarwo", "Injak kepala bayangan dari atas. Satu injakan, satu luka. Jangan sentuh dari samping."),
-                    Dlg.Say("Mbah Sarwo", "Coba pada bayangan latihan di sana. Tiga injakan cukup."));
+                    Dlg.Say("Mbah Sarwo", "Injak kepala bayangan dari atas. Satu injakan, satu luka. Tapi kau akan terlempar menjauh, dan mereka akan membalas."),
+                    Dlg.Say("Mbah Sarwo", "Coba pada bayangan latihan di sana. Tiga injakan cukup."),
+                    Dlg.Say("Mbah Sarwo", "Tiap bayangan punya kebiasaan. Cemas selalu memberi tanda seru sebelum menerjang. Lihat tandanya, lalu lompat."));
 
             if (s.Has(ItemId.EmeraldPendant))
             {
@@ -188,25 +198,31 @@ namespace AnamnesisDalanMulih.Game
             a.Triggers.Add(Zone("a2_start", 0, 5, s => Whisper(
                 "Desa ini menyala, tapi tak bersuara.",
                 "Orang-orangnya masih di sini. Mungkin mereka hanya takut.")));
+            a.Triggers.Add(Zone("a2_charger", 13, 2, s => Whisper(
+                "Cemas itu gelisah. Kalau ia bergetar dan muncul tanda seru, ia akan menerjang. Lompati, lalu injak saat ia lelah.")));
+            a.Triggers.Add(Zone("a2_shooter", 57, 2, s => Whisper(
+                "Keraguan melempar pertanyaan dari kejauhan. Lompati pelurunya, atau dekati dan injak sebelum ia membidik.")));
             a.Triggers.Add(Zone("a2_arena", 70, 2, s => Dlg.Chain(
                 Dlg.Say("Rasa Tidak Aman", "J-jangan mendekat! Aku tidak cukup baik untuk dilihat siapa pun."),
                 Dlg.Say("Bisikan", "Ia memegang kunci gerbang. Injak ia dari atas."))));
 
             a.Checkpoints.Add(new Checkpoint(TileX(6) + 8f, GroundRow * 16f));
             a.Checkpoints.Add(new Checkpoint(TileX(40) + 8f, GroundRow * 16f));
-            a.Checkpoints.Add(new Checkpoint(TileX(64) + 8f, GroundRow * 16f));
+            a.Checkpoints.Add(new Checkpoint(TileX(58) + 8f, GroundRow * 16f));
 
             a.Pickups.Add(new Pickup(ItemId.Herb, TileX(51) + 3f, 6 * 16f - Pickup.Size - 1f));
 
             a.Npcs.Add(new Npc("Bu Lastri", TileX(12) + 3f, Feet(GroundRow, Npc.H), Palette.Lastri, LastriDialog));
             a.Npcs.Add(new Npc("Kang Darman", TileX(56) + 3f, Feet(GroundRow, Npc.H), Palette.Darman, DarmanDialog));
-            a.Npcs.Add(new Npc("Pak Lurah", TileX(67) + 3f, Feet(GroundRow, Npc.H), Palette.Lurah, LurahDialog));
+            a.Npcs.Add(new Npc("Pak Lurah", TileX(68) + 3f, Feet(GroundRow, Npc.H), Palette.Lurah, LurahDialog));
 
             a.Enemies.Add(Cemas(19, 15, 25, GroundRow));
             a.Enemies.Add(Cemas(46, 42, 53, GroundRow));
+            a.Enemies.Add(Keraguan(64, GroundRow));
 
             // Mini-boss: Rasa Tidak Aman
             Enemy boss = new Enemy("Rasa Tidak Aman", TileX(76), Feet(GroundRow, 16), 16, 16, 5, 38f, Palette.TidakAman);
+            boss.Behavior = EnemyBehavior.Hider;
             boss.Hops = true;
             boss.MinX = TileX(71);
             boss.MaxX = TileX(81);
@@ -307,7 +323,7 @@ namespace AnamnesisDalanMulih.Game
         {
             DialogNode story = Dlg.Chain(
                 Dlg.Say("Pak Lurah", "Desa ini kehilangan suaranya sejak bayangan-bayangan datang. Yang paling penakut membawa kunci gerbang timur."),
-                Dlg.Say("Pak Lurah", "Injak ia dari atas. Jangan beri ia ruang untuk bersembunyi."));
+                Dlg.Say("Pak Lurah", "Ia suka bersembunyi. Saat garis kotaknya putus-putus, injakanmu tak mempan. Tunggu ia keluar."));
 
             if (!s.Has(ItemId.Letter) || s.Flag("letter_delivered"))
             {
@@ -352,9 +368,11 @@ namespace AnamnesisDalanMulih.Game
             a.Triggers.Add(Zone("a3_boss", 50, 2, s => Dlg.Chain(
                 Dlg.Say("Bisikan", "Di sinilah aku berhenti bicara. Dan dia mulai."),
                 Dlg.Say("Depresi", "Kenapa kamu terus berjalan? Tidak ada yang menunggumu di sana."),
-                Dlg.Say("Depresi", "Tinggal saja. Tidurlah. Semuanya lebih tenang begitu."))));
+                Dlg.Say("Depresi", "Tinggal saja. Tidurlah. Semuanya lebih tenang begitu."),
+                Dlg.Say("Bisikan", "Ia membanting tanah. Lompati gelombangnya, lalu injak saat ia lelah."))));
 
             a.Checkpoints.Add(new Checkpoint(TileX(4) + 8f, GroundRow * 16f));
+            a.Checkpoints.Add(new Checkpoint(TileX(21) + 8f, GroundRow * 16f));
             a.Checkpoints.Add(new Checkpoint(TileX(38) + 8f, GroundRow * 16f));
             a.Checkpoints.Add(new Checkpoint(TileX(49) + 8f, GroundRow * 16f));
 
@@ -363,12 +381,13 @@ namespace AnamnesisDalanMulih.Game
             a.Npcs.Add(new Npc("Raka", TileX(19) + 3f, Feet(GroundRow, Npc.H), Palette.Raka, RakaDialog));
 
             a.Enemies.Add(Cemas(12, 9, 16, GroundRow));
-            a.Enemies.Add(Cemas(30, 26, 35, GroundRow));
+            a.Enemies.Add(Cemas(27, 26, 31, GroundRow));
+            a.Enemies.Add(Keraguan(34, GroundRow));
             a.Enemies.Add(Cemas(44, 40, 47, GroundRow));
 
-            // Boss terakhir: Depresi. Besar, lambat, dan melompat-lompat.
+            // Boss terakhir: Depresi. Besar, membanting tanah dan melepas gelombang.
             Enemy boss = new Enemy("Depresi", TileX(60), Feet(GroundRow, 24), 24, 24, 8, 32f, Palette.Depresi);
-            boss.Hops = true;
+            boss.Behavior = EnemyBehavior.Slammer;
             boss.MinX = TileX(52);
             boss.MaxX = TileX(68);
             boss.OnDefeat = DepressionDefeated;
@@ -405,7 +424,7 @@ namespace AnamnesisDalanMulih.Game
                 return Dlg.Say("Raka", "Pergilah. Jangan biarkan bayangan itu menemukanmu juga.");
 
             DialogNode ask = Dlg.Say("Raka", "Uhh... bayangan di depan menghajarku. Ramuanku habis. Tolong...");
-            DialogNode thanks = Dlg.Say("Raka", "Terima kasih... Kamu orang baik. Ingat: bayangan terakhir itu bukan musuh biasa.");
+            DialogNode thanks = Dlg.Say("Raka", "Terima kasih... Hati-hati: bayangan terakhir membanting tanah. Lompati gelombangnya, lalu injak saat ia lelah.");
             DialogNode loot = Dlg.Say("Raka", "Kau... kau tega. Ambil saja semuanya.");
             DialogNode sorry = Dlg.Say("Raka", "Ya... ya sudah. Aku mengerti.");
 

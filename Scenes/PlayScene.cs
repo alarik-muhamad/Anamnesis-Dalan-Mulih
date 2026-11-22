@@ -24,10 +24,12 @@ namespace AnamnesisDalanMulih.Scenes
         private readonly Camera _camera = new Camera();
         private readonly DialogRunner _dialog;
         private readonly List<ToastMsg> _toasts = new List<ToastMsg>();
+        private readonly List<Projectile> _shots = new List<Projectile>();
 
         private float _respawnX, _respawnY;
         private float _time;
         private bool _debug;
+        private bool _hiddenHintShown;
 
         public PlayScene(IGameContext game, GameState state, int areaIndex)
         {
@@ -55,6 +57,7 @@ namespace AnamnesisDalanMulih.Scenes
         public bool DialogActive { get { return _dialog.Active; } }
         public Tilemap Map { get { return _map; } }
         public DialogRunner Runner { get { return _dialog; } }
+        public List<Projectile> Shots { get { return _shots; } }
 
         // ---------------------------------------------------------------- IGameHost
         public void Toast(string message)
@@ -148,8 +151,9 @@ namespace AnamnesisDalanMulih.Scenes
             foreach (Npc n in _def.Npcs)
                 n.FacingRight = _player.CenterX > n.X + Npc.W / 2f;
             foreach (Enemy e in _def.Enemies)
-                if (e.Alive) e.Update(dt, _map);
+                if (e.Alive) e.Update(dt, _map, _player, _shots);
 
+            if (UpdateShots(dt)) return;
             if (CheckHazards()) return;
             if (CheckEnemies(prevBottom, input)) return;
             CheckPickups();
@@ -191,6 +195,26 @@ namespace AnamnesisDalanMulih.Scenes
             }
         }
 
+        /// <summary>Peluru dan gelombang musuh: gerak, hilang di dinding, melukai pemain kalau kena. true = game over.</summary>
+        private bool UpdateShots(float dt)
+        {
+            for (int i = _shots.Count - 1; i >= 0; i--)
+            {
+                Projectile s = _shots[i];
+                s.Update(dt, _map);
+
+                if (!s.Dead && _player.Invuln <= 0f && s.Overlaps(_player))
+                {
+                    s.Dead = true;
+                    _state.Hp--;
+                    if (_state.Hp <= 0) { GameOver(); return true; }
+                    _player.Hurt(s.VX >= 0f ? 1 : -1);
+                }
+                if (s.Dead) _shots.RemoveAt(i);
+            }
+            return false;
+        }
+
         /// <summary>Duri / jurang: kurangi 1 HP, kembali ke checkpoint. true = scene berganti (game over).</summary>
         private bool CheckHazards()
         {
@@ -215,7 +239,12 @@ namespace AnamnesisDalanMulih.Scenes
                 if (r == HitResult.Stomp)
                 {
                     bool damaged = e.Hit(1);
-                    _player.Bounce(input.JumpHeld);
+                    _player.Throw(ThrowDirection(e), input.JumpHeld);
+                    if (!damaged && e.Hidden && !_hiddenHintShown)
+                    {
+                        _hiddenHintShown = true;
+                        Toast("Kebal! Tunggu ia keluar dari persembunyian");
+                    }
                     if (damaged && !e.Alive)
                     {
                         Toast(e.Name + " lenyap");
@@ -231,6 +260,26 @@ namespace AnamnesisDalanMulih.Scenes
                 }
             }
             return false;
+        }
+
+        /// <summary>Arah lemparan: menjauhi musuh, tapi dibalik kalau mendaratnya di jurang atau duri.</summary>
+        private int ThrowDirection(Enemy e)
+        {
+            int dir = _player.CenterX < e.CenterX ? -1 : 1;
+            if (LandingSafe(dir)) return dir;
+            return LandingSafe(-dir) ? -dir : dir;
+        }
+
+        private bool LandingSafe(int dir)
+        {
+            int ts = Tilemap.TileSize;
+            int col = (int)Math.Floor((_player.CenterX + dir * 44f) / ts);
+            int top = (int)Math.Floor((_player.Y + Player.Height) / ts);
+            for (int r = top; r <= top + 4; r++)
+            {
+                if (_map.IsSolid(col, r)) return !_map.IsHazard(col, r - 1);
+            }
+            return false; // tidak ada lantai = jurang
         }
 
         private void CheckPickups()
@@ -324,6 +373,7 @@ namespace AnamnesisDalanMulih.Scenes
             foreach (Pickup p in _def.Pickups) p.Draw(g, cx, cy, _time);
             foreach (Npc n in _def.Npcs) n.Draw(g, cx, cy);
             foreach (Enemy e in _def.Enemies) e.Draw(g, cx, cy);
+            foreach (Projectile s in _shots) s.Draw(g, cx, cy);
             _player.Draw(g, cx, cy);
 
             if (!_dialog.Active) DrawPrompts(g, cx, cy);
@@ -361,7 +411,8 @@ namespace AnamnesisDalanMulih.Scenes
             {
                 int x = GameWindow.ViewW - 6 - GameState.SlotCount * 20 + i * 20;
                 Ui.DrawBox(g, new Rectangle(x, 6, 18, 18), line);
-                Ui.DrawText(g, (i + 1).ToString(), Ui.Small, Color.FromArgb(110, 110, 130), x + 6, 25);
+                if (!_dialog.Active)
+                    Ui.DrawText(g, (i + 1).ToString(), Ui.Small, Color.FromArgb(110, 110, 130), x + 6, 25);
 
                 ItemId id = _state.Slots[i];
                 if (id != ItemId.None)
